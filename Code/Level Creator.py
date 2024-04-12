@@ -8,9 +8,15 @@ Textures = os.listdir("D:\.My folder\Personal stuff\coding stuff\Coding Projects
 LevelList = []
 
 
-def DrawLevel(LevelList,MapSize_x,MapSize_y,TileSize):
-    for tile in LevelList:
-        
+def DrawLevel(LevelList,MapSize_x,MapSize_y,TileSize,Window):
+    tile = 0
+    for y in range(MapSize_y//TileSize):
+        for x in range(MapSize_x//TileSize):
+            if LevelList[tile] == "empty0":
+                pygame.draw.rect(Window,pygame.Color("#FFFFFF"),(x*TileSize,y*TileSize,TileSize,TileSize))
+            elif LevelList[tile] == "empty1":
+                pygame.draw.rect(Window,pygame.Color("#8D918D"),(x*TileSize,y*TileSize,TileSize,TileSize))
+            tile+=1
 
     pass
 
@@ -18,6 +24,7 @@ def CreatingWindow(WindowName):
     pygame.display.init()
     Window = pygame.display.set_mode((Win_y,Win_x))
     pygame.display.set_caption(WindowName)
+    return Window
 
 ##TODO
 ##Loads a level from the folder "levels"
@@ -50,27 +57,41 @@ def NewLevel():
     MapSize_x = int(MapSize_x)
     MapSize_y = int(MapSize_y)
     if MapSize_x % TileSize != 0:
-        MapSize_x += 16-(MapSize_x%TileSize)
+        MapSize_x += TileSize-(MapSize_x%TileSize)
     if MapSize_y % TileSize != 0:
-        MapSize_y += 16-(MapSize_y%TileSize)
+        MapSize_y += TileSize-(MapSize_y%TileSize)
     print(f"MapSize_x: {MapSize_x}\nMapSize_y: {MapSize_y}\nTileSize: {TileSize}")
 
     ##generates the empty textures for the level
     switch = True
+    MetaSwitch = True
     for y in range(MapSize_y//TileSize):
         for x in range(MapSize_x//TileSize):
+            if x==0:
+                if MetaSwitch == True:
+                    MetaSwitch=False
+                    switch = MetaSwitch
+                else:
+                    MetaSwitch = True
+                    switch = MetaSwitch
+
             if switch == True:
                 LevelList.append("empty0")
+                switch = False
             else:
                 LevelList.append("empty1")
-    CreatingWindow("newLevel")
+                switch = True
+    Window = CreatingWindow("newLevel")
     while True:
-        
-
+        Window.fill(pygame.Color("#211522"))
+        DrawLevel(LevelList,MapSize_x,MapSize_y,TileSize,Window)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mousepos = pygame.mouse.get_pos()
         
         pygame.display.update()
         Clock.tick(FPS)
