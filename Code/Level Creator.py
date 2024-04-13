@@ -7,15 +7,14 @@ SavedLevels = os.listdir("D:\.My folder\Personal stuff\coding stuff\Coding Proje
 Textures = os.listdir("D:\.My folder\Personal stuff\coding stuff\Coding Projects\Medieval Mall\Assets")
 LevelList = []
 
-
+#Draws the level using the images in the assets folder
 def DrawLevel(LevelList,MapSize_x,MapSize_y,TileSize,Window):
     tile = 0
     for y in range(MapSize_y//TileSize):
         for x in range(MapSize_x//TileSize):
-            if LevelList[tile] == "empty0":
-                pygame.draw.rect(Window,pygame.Color("#FFFFFF"),(x*TileSize,y*TileSize,TileSize,TileSize))
-            elif LevelList[tile] == "empty1":
-                pygame.draw.rect(Window,pygame.Color("#8D918D"),(x*TileSize,y*TileSize,TileSize,TileSize))
+            TextureFromLevelList = pygame.image.load(f"D:\.My folder\Personal stuff\coding stuff\Coding Projects\Medieval Mall\Assets\{LevelList[tile]}")
+            Window.blit(TextureFromLevelList,(x*TileSize,y*TileSize))
+
             tile+=1
 
     pass
@@ -76,10 +75,10 @@ def NewLevel():
                     switch = MetaSwitch
 
             if switch == True:
-                LevelList.append("empty0")
+                LevelList.append("Utility\Empty0.png")
                 switch = False
             else:
-                LevelList.append("empty1")
+                LevelList.append("Utility\Empty1.png")
                 switch = True
     Window = CreatingWindow("newLevel")
     while True:
@@ -92,6 +91,7 @@ def NewLevel():
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mousepos = pygame.mouse.get_pos()
+                
         
         pygame.display.update()
         Clock.tick(FPS)
