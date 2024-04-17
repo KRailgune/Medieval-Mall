@@ -1,3 +1,7 @@
+###TODO###
+# - Use 2dArray to store the LevelList
+
+
 import pygame, os
 
 Win_x,Win_y = 1080*0.75,1920*0.75
@@ -91,7 +95,14 @@ def NewLevel():
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mousepos = pygame.mouse.get_pos()
-                
+                LevelList[(mousepos[0]//TileSize)+((mousepos[1]//TileSize)*(MapSize_x//TileSize))] = "Utility\Error.png"
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                mousepos = pygame.mouse.get_pos()
+                LevelList[(mousepos[0]//TileSize)+((mousepos[1]//TileSize)*(MapSize_x//TileSize))] = "Decorations\Grass.png"
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 2:
+                mousepos = pygame.mouse.get_pos()
+                LevelList[(mousepos[0]//TileSize)+((mousepos[1]//TileSize)*(MapSize_x//TileSize))] = "Colides\Bricks.png"
+
         
         pygame.display.update()
         Clock.tick(FPS)
