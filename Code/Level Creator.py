@@ -9,19 +9,14 @@ Clock = pygame.time.Clock()
 FPS = 60
 SavedLevels = os.listdir("D:\.My folder\Personal stuff\coding stuff\Coding Projects\Medieval Mall\Code\Levels")
 Textures = os.listdir("D:\.My folder\Personal stuff\coding stuff\Coding Projects\Medieval Mall\Assets")
-LevelList = []
 
 #Draws the level using the images in the assets folder
-def DrawLevel(LevelList,MapSize_x,MapSize_y,TileSize,Window):
-    tile = 0
-    for y in range(MapSize_y//TileSize):
-        for x in range(MapSize_x//TileSize):
-            TextureFromLevelList = pygame.image.load(f"D:\.My folder\Personal stuff\coding stuff\Coding Projects\Medieval Mall\Assets\{LevelList[tile]}")
+def DrawLevel(LevelList,Rows,Columns,TileSize,Window):
+    for y in range(Columns):
+        for x in range(Rows):
+            TextureFromLevelList = pygame.image.load(f"D:\.My folder\Personal stuff\coding stuff\Coding Projects\Medieval Mall\Assets\{LevelList[y][x]}")
             Window.blit(TextureFromLevelList,(x*TileSize,y*TileSize))
 
-            tile+=1
-
-    pass
 
 def CreatingWindow(WindowName):
     pygame.display.init()
@@ -44,7 +39,6 @@ def LoadLevel():
             if event.type == pygame.QUIT:
                 exit()
 
-#TODO
 ##Creates a new level
 def NewLevel():
     TileSize = int(input("TileSize: "))
@@ -66,10 +60,12 @@ def NewLevel():
     print(f"MapSize_x: {MapSize_x}\nMapSize_y: {MapSize_y}\nTileSize: {TileSize}")
 
     ##generates the empty textures for the level
+    Rows , Columns = MapSize_x//TileSize,MapSize_y//TileSize
+    LevelList = [[0 for j in range(Rows)]for i in range(Columns)]
     switch = True
     MetaSwitch = True
-    for y in range(MapSize_y//TileSize):
-        for x in range(MapSize_x//TileSize):
+    for y in range(Columns):
+        for x in range(Rows):
             if x==0:
                 if MetaSwitch == True:
                     MetaSwitch=False
@@ -79,15 +75,16 @@ def NewLevel():
                     switch = MetaSwitch
 
             if switch == True:
-                LevelList.append("Utility\Empty0.png")
+                LevelList[y][x] = "Utility\Empty0.png"
                 switch = False
             else:
-                LevelList.append("Utility\Empty1.png")
+                LevelList[y][x] = "Utility\Empty1.png"
                 switch = True
+
     Window = CreatingWindow("newLevel")
     while True:
         Window.fill(pygame.Color("#211522"))
-        DrawLevel(LevelList,MapSize_x,MapSize_y,TileSize,Window)
+        DrawLevel(LevelList,Rows,Columns,TileSize,Window)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -95,13 +92,18 @@ def NewLevel():
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mousepos = pygame.mouse.get_pos()
-                LevelList[(mousepos[0]//TileSize)+((mousepos[1]//TileSize)*(MapSize_x//TileSize))] = "Utility\Error.png"
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                mousepos = pygame.mouse.get_pos()
-                LevelList[(mousepos[0]//TileSize)+((mousepos[1]//TileSize)*(MapSize_x//TileSize))] = "Decorations\Grass.png"
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 2:
-                mousepos = pygame.mouse.get_pos()
-                LevelList[(mousepos[0]//TileSize)+((mousepos[1]//TileSize)*(MapSize_x//TileSize))] = "Colides\Bricks.png"
+                try:
+                    LevelList[mousepos[1]//TileSize][mousepos[0]//TileSize] = "Utility\Error.png"
+                except IndexError:
+                    pass
+
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button==2:
+                panning = True
+                print("panning")
+            elif event.type == pygame.MOUSEBUTTONUP and event.button==2:
+                panning = False
+                print("not panning")
+            
 
         
         pygame.display.update()
