@@ -6,12 +6,24 @@ import pygame, os, random
 Win_x,Win_y = 1080*0.75,1920*0.75
 Clock = pygame.time.Clock()
 FPS = 120
+GridColour = 100,100,255
 
-def DrawLines():
-    
-    pass
+def DrawGridLines(Window,origin,Tilesize):
 
-def DrawOrigin(surface,origin):
+    Win_x = pygame.display.get_window_size()[0]
+    Win_y = pygame.display.get_window_size()[1]
+    rows,columns = Win_x//Tilesize,Win_y//Tilesize
+    ##Horizontal GridLines
+    for y in range(columns+1):
+        pygame.draw.line(Window,GridColour,(0,origin[1]%Tilesize+y*Tilesize),(Win_x,origin[1]%Tilesize+y*Tilesize))
+    ##Vertical GridLines
+    for x in range(rows+1):
+        pygame.draw.line(Window,GridColour,(origin[0]%Tilesize+x*Tilesize,0),(origin[0]%Tilesize+x*Tilesize,Win_y))
+
+##draws the background of an empty project
+def DrawBase(surface,origin,Tilesize):
+    Window.fill((220,220,220))
+    DrawGridLines(surface,origin,Tilesize)
     pygame.draw.circle(surface,(255,0,0),(origin),10)
 
 def NewLevel_Setup():
@@ -55,10 +67,11 @@ origin = 0,0
 offset = 0,0
 panning = False
 while True:
+    ##############################################################
 
-    Window.fill((255,255,255))
-    DrawOrigin(Window,origin)
+    DrawBase(Window,origin,TileSize)
 
+    ##############################################################
     if panning == True:
         mousepos = pygame.mouse.get_pos()
         origin = (mousepos[0]-offset[0]),(mousepos[1]-offset[1])
